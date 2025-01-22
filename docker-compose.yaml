@@ -8,10 +8,27 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=linux
       - POSTGRES_DB=mydatabase
+    networks:
+      - rust-network
+  
+  rust-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - "8080:8080"
+    entrypoint: ["/bin/sh","-c","(sqlx migrate run || echo 'ignoring migration') && ./target/release/server"]
+    environment:
+      DATABASE_URL: "postgres://postgres:linux@db:5432/mydatabase"
+      HOST: "0.0.0.0"
+      PORT: "8080"
+      JWT_KEY: "SECRET_KEY"
+      RUST_LOG: "actix_web=info"
+    depends_on:
+      - db
+    networks:
+      - rust-network
 
-volumes:
-  postgres_data:
+networks:
+  rust-network:
+    driver: bridge

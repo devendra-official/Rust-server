@@ -16,3 +16,5 @@ log = "0.4.25"
 sqlx = { version = "0.7", features = ["postgres", "runtime-tokio-native-tls", "uuid", "chrono"] }
 uuid = { version = "1", features = ["serde"] }  
 chrono = { version = "0.4", features = ["serde"] } 
+actix-service = "2.0.2"
+futures-util = "0.3.31"
