@@ -1,4 +1,5 @@
-/target
+target/
 README.md
 Cargo.lock
 .env
+development/
