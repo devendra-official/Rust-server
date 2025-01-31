@@ -51,7 +51,7 @@ Replace `username`, `password`, and `database_name` with your actual Postgres cr
 
 1. Run the server:
     ```sh
-    RUST_LOG=info ./target/release/rust-web-server
+    RUST_LOG=info cargo run
     ```
 
 2. Open your web browser and navigate to `http://localhost:8080`.
