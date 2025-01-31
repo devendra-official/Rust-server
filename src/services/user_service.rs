@@ -3,8 +3,8 @@ use chrono::Utc;
 use sqlx::{Pool, Postgres, Row};
 use uuid::Uuid;
 
-use crate::controller::jwt::{Jwt, Jwtoken};
-use crate::controller::pass_hash::{CusHashing, CusPasswordHash};
+use crate::utils::jwt::{Jwt, Jwtoken};
+use crate::utils::pass_hash::{CusHashing, CusPasswordHash};
 use crate::models::error::{AppError, AppErrorType, AppRes};
 use crate::models::user::{User, UserLogin, UserSignUp};
 

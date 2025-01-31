@@ -8,3 +8,13 @@ CREATE TABLE users (
     profile_url TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE blog_posts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    author_id UUID NOT NULL,
+    image_url TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+);

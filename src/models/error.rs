@@ -7,7 +7,13 @@ pub enum AppErrorType {
     ControllerError,
     WrongPassword,
     NotFound,
-    Other
+    Other,
+    FileError,
+    FailedToUpload,
+    LargeFile,
+    InsuffiecientField,
+    Authentication,
+    NotAllowed
 }
 
 #[derive(Debug)]
@@ -50,6 +56,12 @@ impl ResponseError for AppError {
             AppErrorType::NotFound => StatusCode::NOT_FOUND,
             AppErrorType::Other => StatusCode::INTERNAL_SERVER_ERROR,
             AppErrorType::WrongPassword => StatusCode::UNAUTHORIZED,
+            AppErrorType::FailedToUpload => StatusCode::INTERNAL_SERVER_ERROR,
+            AppErrorType::FileError => StatusCode::BAD_REQUEST,
+            AppErrorType::LargeFile => StatusCode::PAYLOAD_TOO_LARGE,
+            AppErrorType::InsuffiecientField => StatusCode::BAD_REQUEST,
+            AppErrorType::Authentication => StatusCode::UNAUTHORIZED,
+            AppErrorType::NotAllowed => StatusCode::FORBIDDEN
         }
     }
 

@@ -1,9 +1,10 @@
-use crate::models::other_model::Claims;
-use jsonwebtoken::{EncodingKey, Header};
+use crate::models::jwt_model::Claims;
+use jsonwebtoken::{decode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 pub trait Jwt {
     fn generate_jwt(id: String) -> Result<String, String>;
+    fn verify_jwt(token: &str) -> Result<Claims, String>;
 }
 
 pub struct Jwtoken;
@@ -27,11 +28,22 @@ impl Jwt for Jwtoken {
             Err(err) => return Err(err.to_string()),
         };
 
-        let headers = Header::default();
+        let headers = Header::new(Algorithm::HS256);
 
         match jsonwebtoken::encode(&headers, &claims, &EncodingKey::from_secret(key.as_ref())) {
             Ok(token) => Ok(token),
             Err(error) => Err(error.to_string()),
         }
+    }
+
+    fn verify_jwt(token: &str) -> Result<Claims, String> {
+        let validation = Validation::new(Algorithm::HS256);
+        let key = match std::env::var("JWT_KEY") {
+            Ok(value) => value,
+            Err(err) => return Err(err.to_string()),
+        };
+        let decoded = decode::<Claims>(token, &DecodingKey::from_secret(key.as_ref()), &validation)
+            .map_err(|_| String::from("Authentication Failed"))?;
+        Ok(decoded.claims)
     }
 }

@@ -1,19 +1,40 @@
 POST http://localhost:8080/users/signup HTTP/1.1
-content-type: application/json
+Content-type: application/json
 
 {
     "name":"Devendra",
-    "username":"devendra.b",
-    "email":"devendrab.official@gmail.com",
+    "username":"devendrab",
+    "email":"devendra.official@gmail.com",
     "password":"password",
     "profile_url":"https://github.com/devendrab-official/profile"
 }
 
 ###
 POST http://localhost:8080/users/login HTTP/1.1
-content-Type: application/json
+Content-Type: application/json
 
 {
-    "email":"devendrab.official@gmail.com",
+    "email":"devendra.official@gmail.com",
     "password":"password"
 }
+
+###
+POST http://localhost:8080/blog/upload HTTP/1.1
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjb21wYW55IjoidXNlcl9hdXRoZW50aWNhdGlvbiIsInN1YiI6IjQwMDdjODg5LTc2MjMtNDhjZS05MTNkLWVkN2Q0NGExZTBmZSIsImV4cCI6MTczODI5Mjk5OX0.rKsOSR1J7QvwoRMLRKDtA4fhg_KfWOtNdfxLEHFOkW0
+Content-Type: multipart/form-data; boundary=MyBoundary
+
+--MyBoundary
+Content-Disposition: form-data; name="file"; filename="hello.png"
+
+< /home/devendra/Pictures/Screenshots/hello.png
+
+--MyBoundary
+Content-Disposition: form-data; name="blog"
+Content-Type: application/json
+
+{
+  "title": "My Blog",
+  "content": "This is a blog post."
+}
+
+--MyBoundary--
