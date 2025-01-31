@@ -13,10 +13,10 @@ This project is a simple web server implemented in Rust. It is designed to handl
 - Rust (latest stable version)
 - Cargo (Rust package manager)
 - Postgres (latest version)
-- 
+  
 ## Testing
 
-You can use the `rest.http` file to test the HTTP endpoints of the server. Make sure you have the REST Client extension installed in your code editor.
+You can use the `rest.http` file to test the HTTP endpoints of the server. Make sure you have the `REST Client` extension installed in your code editor.
 
 ## Database Configuration
 
