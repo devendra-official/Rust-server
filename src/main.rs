@@ -14,7 +14,7 @@ use dotenv::dotenv;
 use middleware::jwt_middleware::JwtHandle;
 use models::error::AppRes;
 use services::{
-    blog_service::blog_upload,
+    blog_service::{blog_upload, get_blog},
     user_service::{login, signup},
 };
 
@@ -54,11 +54,11 @@ async fn main() -> std::io::Result<()> {
             .service(
                 web::scope("/blog")
                     .wrap(JwtHandle)
-                    .route("/upload", web::post().to(blog_upload)),
+                    .route("/upload", web::post().to(blog_upload))
+                    .route("/get-blogs", web::get().to(get_blog))
             )
             .route("/users/login", web::post().to(login))
             .route("/users/signup", web::post().to(signup))
-            .route("/blog/upload", web::post().to(blog_upload))
             .default_service(
                 web::route()
                     .to(|| async { HttpResponse::NotFound().json(AppRes::new("Page Not Found")) }),

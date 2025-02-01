@@ -15,6 +15,6 @@ CREATE TABLE blog_posts (
     content TEXT NOT NULL,
     author_id UUID NOT NULL,
     image_url TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );

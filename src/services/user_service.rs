@@ -13,12 +13,12 @@ pub async fn login(
     pool: web::Data<Pool<Postgres>>,
 ) -> Result<HttpResponse, AppError> {
     let user_data = user.into_inner();
-    let pool: Pool<Postgres> = pool.get_ref().clone();
+    let pool: &Pool<Postgres> = pool.get_ref();
     let sql = "SELECT * FROM users WHERE email=$1";
 
     match sqlx::query(sql)
         .bind(user_data.email)
-        .fetch_one(&pool)
+        .fetch_one(pool)
         .await
     {
         Ok(row) => {
@@ -84,7 +84,7 @@ pub async fn signup(
     pool: web::Data<Pool<Postgres>>,
 ) -> Result<HttpResponse, AppError> {
     let usr = user.into_inner();
-    let pool: Pool<Postgres> = pool.get_ref().clone();
+    let pool: &Pool<Postgres> = pool.get_ref();
 
     let hash = match CusPasswordHash::password_hash(&usr.password) {
         Ok(hash) => hash,
@@ -105,7 +105,7 @@ pub async fn signup(
         .bind(usr.email)
         .bind(hash)
         .bind(usr.profile_url)
-        .execute(&pool)
+        .execute(pool)
         .await
     {
         Ok(_result) => {

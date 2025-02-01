@@ -3,12 +3,12 @@ use std::io::Write;
 use actix_multipart::Multipart;
 use actix_web::{web::Data, HttpMessage, HttpRequest, HttpResponse};
 use futures_util::TryStreamExt;
-use sqlx::{Pool, Postgres};
+use sqlx::{Pool, Postgres,Row};
 use uuid::Uuid;
 
 use crate::{
     models::{
-        blog_model::Blog,
+        blog_model::{Blog, BlogData},
         error::{AppError, AppErrorType, AppRes},
     },
     utils::files::file_handle,
@@ -22,7 +22,7 @@ pub async fn blog_upload(
 ) -> Result<HttpResponse, AppError> {
     let mut image_url: Option<String> = None;
     let mut blog_data: Option<Blog> = None;
-    let pool: Pool<Postgres> = pool.get_ref().clone();
+    let pool: &Pool<Postgres> = pool.get_ref();
     let ext = req.extensions();
     let id = match ext.get::<String>() {
         Some(id) => id,
@@ -97,7 +97,7 @@ pub async fn blog_upload(
                 .bind(data.content)
                 .bind(user_id)
                 .bind(url)
-                .execute(&pool)
+                .execute(pool)
                 .await
                 .map_err(|error| AppError {
                     error_type: AppErrorType::DBError,
@@ -107,4 +107,36 @@ pub async fn blog_upload(
     }
 
     Ok(HttpResponse::Ok().json(AppRes::new("Blog uploaded successfully")))
+}
+
+pub async fn get_blog(pool: Data<Pool<Postgres>>) -> Result<HttpResponse, AppError> {
+    let pool = pool.get_ref();
+
+    let query = 
+    "SELECT 
+        b.id,b.title,b.content,b.image_url,b.created_at,u.email,u.username,u.profile_url AS profile_image 
+    FROM 
+        blog_posts AS b
+    JOIN 
+        users AS u ON b.author_id=u.id";
+        sqlx::query(query).fetch_all(pool).await.unwrap();
+    if let Ok(result) = sqlx::query(query).fetch_all(pool).await {
+        let mut blogs: Vec<BlogData> = vec![];
+        for data in result {
+            blogs.push(
+                BlogData { 
+                    id: data.get("id"), 
+                    title: data.get("title"), 
+                    content: data.get("content"), 
+                    image_url: data.get("image_url"), 
+                    created_at: data.get("created_at"), 
+                    email: data.get("email"), 
+                    username: data.get("username"), 
+                    profile_image: data.get("profile_image") 
+                }
+            );
+        }
+        return Ok(HttpResponse::Ok().json(blogs));
+    }
+    Err(AppError { message: Some(String::from("unable to fetch the data")), error_type: AppErrorType::DBError })
 }
