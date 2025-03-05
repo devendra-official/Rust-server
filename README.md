@@ -67,4 +67,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Acknowledgements
 
 - [Rust Programming Language](https://www.rust-lang.org/)
-- [Hyper](https://hyper.rs/) - Fast and safe HTTP implementation for Rust
