@@ -32,7 +32,7 @@ async fn main() -> std::io::Result<()> {
     let server = HttpServer::new(move || {
         App::new()
             .service(Files::new("/files", &upload).show_files_listing())
-            .wrap(Cors::default())
+            .wrap(Cors::default().allow_any_origin())
             .wrap(Logger::default())
             .app_data(web::Data::new(pool.clone()))
             .app_data(web::JsonConfig::default().error_handler(|err, _| {
